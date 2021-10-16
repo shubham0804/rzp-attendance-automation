@@ -16,7 +16,9 @@ const start = async () => {
     try {
         // To-Do Validate env file
 
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            args: ['--no-sandbox']
+        });
         console.log("Validating login credentials...");
         const isLoggedIn = await login({ browser, email, password });
         if (!isLoggedIn) {

@@ -8,6 +8,8 @@ const login = async ({ browser, email, password }) => {
     await page.type("input[name=password]", password);
     await page.keyboard.press("Enter");
 
+    await page.screenshot({path: '../login.png'})
+
     // const response = await page.waitForResponse(`${baseUrl}/dashboard`, 40000);
     await page.waitForNavigation();
 
