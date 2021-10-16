@@ -1,8 +1,7 @@
 const CronJob = require("cron").CronJob;
 const { cronExpression } = require("./parse");
-const {emailPassword} = require('./prompts');
 
-const baseUrl = process.env.BASE_URL;
+const baseUrl = "https://payroll.razorpay.com";
 
 const getAccessToken = async (page) => {
     const cookies = await page.cookies();

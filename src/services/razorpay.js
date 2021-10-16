@@ -1,4 +1,4 @@
-const baseUrl = process.env.BASE_URL;
+const baseUrl = "https://payroll.razorpay.com";
 
 const login = async ({ browser, email, password }) => {
     const page = await browser.newPage();

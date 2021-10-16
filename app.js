@@ -5,30 +5,25 @@ puppeteer.use(StealthPlugin());
 
 const { markAttendance, login } = require("./src/services/razorpay");
 const { startCronJob } = require("./src/services/misc");
-const { timingPrompt, emailPasswordPrompt } = require("./src/services/prompts");
 
+const email = process.env.EMAIL;
+const password = process.env.PASSWORD;
 const checkInTime = process.env.CHECK_IN_TIME;
 const checkOutTime = process.env.CHECK_OUT_TIME;
 const randomizeTime = process.env.RANDOMIZE_TIME;
 
 const start = async () => {
     try {
+        // To-Do Validate env file
+
         const browser = await puppeteer.launch();
+        console.log("Validating login credentials...");
+        const isLoggedIn = await login({ browser, email, password });
+        if (!isLoggedIn) {
+            throw new Error("Invalid login credentials. Edit in .env");
+        } 
+        console.log("Login credentials valid!");
 
-        let isLoggedIn;
-        do {
-            const { email, password } = await emailPasswordPrompt();
-            console.log("Validating credentials...");
-            isLoggedIn = await login({ browser, email, password });
-            if (!isLoggedIn) {
-                console.log("Invalid credentials. Try again");
-            } else {
-                console.log("Credentials valid!");
-            }
-        } while (!isLoggedIn);
-
-        const { checkInTime, checkOutTime, randomizeTime } =
-            await timingPrompt();
         // Check In
         // To-Do Check if access token is valid
         const checkIn = async () =>
