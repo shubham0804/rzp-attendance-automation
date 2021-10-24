@@ -4,7 +4,7 @@ const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 puppeteer.use(StealthPlugin());
 
 const { markAttendance, login } = require("./src/services/razorpay");
-const { startCronJob } = require("./src/services/misc");
+const { startCronJob, isAccessTokenValid } = require("./src/services/misc");
 
 const email = process.env.EMAIL;
 const password = process.env.PASSWORD;
@@ -17,7 +17,8 @@ const start = async () => {
         // To-Do Validate env file
 
         const browser = await puppeteer.launch({
-            args: ['--no-sandbox']
+            args: ['--no-sandbox'],
+            headless: false
         });
         console.log("Validating login credentials...");
         const isLoggedIn = await login({ browser, email, password });
@@ -26,12 +27,12 @@ const start = async () => {
         } 
         console.log("Login credentials valid!");
 
+        isAccessTokenValid()
+
         // Check In
         // To-Do Check if access token is valid
-        const checkIn = async () =>
-            await markAttendance({ browser, type: "checkIn" });
-        // const dummyCheckIn = () =>
-        //     console.log(`${new Date().toLocaleTimeString()}: checking in`);
+        const checkIn = async () => await markAttendance({ browser, type: "checkIn" });
+
         const checkInCron = await startCronJob({
             fnc: checkIn,
             executionTime: checkInTime,
@@ -42,8 +43,7 @@ const start = async () => {
         // To-Do Check if access token is valid
         const checkOut = async () =>
             await markAttendance({ browser, type: "checkOut" });
-        // const dummyCheckOut = () =>
-        //     console.log(`${new Date().toLocaleTimeString()}: checking out`);
+
         const checkOutCron = await startCronJob({
             fnc: checkOut,
             executionTime: checkOutTime,

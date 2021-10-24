@@ -8,7 +8,9 @@ const login = async ({ browser, email, password }) => {
     await page.type("input[name=password]", password);
     await page.keyboard.press("Enter");
 
-    await page.screenshot({path: '../login.png'})
+    await page.waitForTimeout(2000);
+    const captcha = await page.$('iframe[src*="recaptcha/"]');
+    console.log({captcha})
 
     // const response = await page.waitForResponse(`${baseUrl}/dashboard`, 40000);
     await page.waitForNavigation();
